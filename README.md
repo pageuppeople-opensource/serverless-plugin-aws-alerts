@@ -18,14 +18,31 @@ provider:
   runtime: nodejs4.3
 
 custom:
+
+  notifications:
+    - protocol: email
+      endpoint: john@acloud.guru
+  codeRedNotifications:
+    - protocol: sms
+      endpoint: +61407874400
+    - protocol: email
+      endpoint: xxxx@pageup.slack.com
+
   alerts:
     stages: # Optionally - select which stages to deploy alarms to
       - producton
       - staging
     topics:
       ok: ${self:service}-${opt:stage}-alerts-ok
-      alarm: ${self:service}-${opt:stage}-alerts-alarm
       insufficientData: ${self:service}-${opt:stage}-alerts-insufficientData
+      alarm:
+        topic: ${self:service}-${opt:stage, self:provider.stage}-alerts-alarm
+        notifications: ${self:custom.notifications}
+      codeRedAlarm:
+        topic: ${self:service}-${opt:stage, self:provider.stage}-alerts-alarm-code-red
+        notifications: ${self:custom.codeRedNotifications}
+
+
     definitions:  # these defaults are merged with your definitions
       functionErrors:
         period: 300 # override period
@@ -37,7 +54,20 @@ custom:
         period: 300
         evaluationPeriods: 1
         comparisonOperator: GreaterThanThreshold
+
+     functionCodeRed: #Something is _really_ going wrong and the team needs to know about it NOW!
+        namespace: 'AWS/Lambda'
+        metric: Errors
+        threshold: 20
+        statistic: Sum
+        period: 300
+        evaluationPeriods: 1
+        comparisonOperator: GreaterThanOrEqualToThreshold
+        topics:
+          alarm: codeRedAlarm
+
     global:
+      - functionCodeRed
       - functionThrottles
       - functionErrors
     function:

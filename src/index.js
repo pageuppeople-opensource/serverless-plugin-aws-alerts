@@ -74,17 +74,30 @@ class Plugin {
 		const alarmActions = [];
 		const insufficientDataActions = [];
 
-		if(alertTopics.ok) {
-			okActions.push(alertTopics.ok);
+		if (definition.topics && definition.topics.ok && alertTopics[definition.topics.ok]) {
+			okActions.push(alertTopics[definition.topics.ok]);
+		} else {
+			if(alertTopics.ok) {
+				okActions.push(alertTopics.ok);
+			}
 		}
 
-		if(alertTopics.alarm) {
-			alarmActions.push(alertTopics.alarm);
+		if (definition.topics && definition.topics.alarm && alertTopics[definition.topics.alarm]) {
+			alarmActions.push(alertTopics[definition.topics.alarm]);
+		} else {
+			if(alertTopics.alarm) {
+				alarmActions.push(alertTopics.alarm);
+			}
 		}
 
-		if(alertTopics.insufficientData) {
-			insufficientDataActions.push(alertTopics.insufficientData);
+		if (definition.topics && definition.topics.insufficientData && alertTopics[definition.topics.insufficientData]) {
+			insufficientDataActions.push(alertTopics[definition.topics.insufficientData]);
+		} else {
+			if(alertTopics.insufficientData) {
+				insufficientDataActions.push(alertTopics.insufficientData);
+			}
 		}
+
 
 		const namespace = definition.pattern ? 
 			this.awsProvider.naming.getStackName() :

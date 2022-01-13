@@ -11,8 +11,10 @@
     "test:cover": "jest --coverage"
   },
   "repository": {
-    "url": "https://github.com/ACloudGuru/serverless-plugin-aws-alerts.git",
-    "type": "git"
+    "url": "git://github.com/PageUpPeopleOrg/pageup-aws"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
   },
   "author": "John McKim <john@acloud.guru>",
   "license": "MIT",
